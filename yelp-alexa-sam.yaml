@@ -1,0 +1,43 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform:
+- AWS::Serverless-2016-10-31
+
+Resources:
+  LambdaTrustRole:
+    Description: Creating service role in IAM for AWS Lambda
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Path: "/"
+      Policies:
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            Effect: Allow
+            Resource: "*"
+          Version: '2012-10-17'
+        PolicyName: MyLambdaWorkerPolicy
+      RoleName: !Ref AWS::StackName
+    Type: AWS::IAM::Role
+  AlexaSkillFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: index.handler
+      Runtime: nodejs8.10
+      Role:
+        Fn::GetAtt:
+        - LambdaTrustRole
+        - Arn
+      Events:
+        AlexaSkillEvent:
+          Type: AlexaSkill

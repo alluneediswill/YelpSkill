@@ -1,0 +1,19 @@
+{
+  "name": "facebookskill",
+  "version": "0.0.1",
+  "description": "Alexa skill to check facebook updates",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "alexa"
+  ],
+  "author": "William Ng",
+  "license": "ISC",
+  "dependencies": {
+    "ask-sdk": "^2.0.0",
+    "speechmatch": "^0.5.2",
+    "yelp-fusion": "^2.0.3"
+  }
+}
