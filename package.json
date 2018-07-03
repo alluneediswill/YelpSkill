@@ -4,7 +4,11 @@
   "description": "Alexa skill to check facebook updates",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "npm run prettier && npm run tslint && npm run build-ts",
+    "build-ts": "tsc",
+    "test": "mocha -r ts-node/register test/**/*.spec.ts",
+    "prettier": "prettier --write \"{src/**/*,*}.ts\"",
+    "tslint": "tslint -c tslint.json -p tsconfig.json"
   },
   "keywords": [
     "alexa"
@@ -13,7 +17,20 @@
   "license": "ISC",
   "dependencies": {
     "ask-sdk": "^2.0.0",
+    "pg": "^7.4.3",
     "speechmatch": "^0.5.2",
     "yelp-fusion": "^2.0.3"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.1.4",
+    "@types/mocha": "^5.2.4",
+    "@types/node": "^10.5.1",
+    "@types/pg": "^7.4.10",
+    "chai": "^4.1.2",
+    "mocha": "^5.2.0",
+    "prettier": "^1.13.7",
+    "ts-node": "^7.0.0",
+    "tslint": "^5.10.0",
+    "typescript": "^2.9.2"
   }
 }

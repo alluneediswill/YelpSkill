@@ -1,11 +1,19 @@
-const Alexa = require("ask-sdk");
-const speechMatch = require("speechmatch");
+import * as Alexa from "ask-sdk";
+import { SpeechMatch } from "speechmatch";
+import { Client } from "pg";
+import { KMSDecrypter } from "./KMSDecrypter";
+import { SessionEndedRequest, IntentRequest } from "ask-sdk-model";
+const dbClient = new Client();
+
+const dbUserDecrypter = new KMSDecrypter(process.env["db_user"]);
+const dbPasswordDecrypter = new KMSDecrypter(process.env["db_pw"]);
+const dbHostDecrypter = new KMSDecrypter(process.env["db_host"]);
 
 const LaunchRequestHandler = {
-  canHandle(handlerInput) {
+  canHandle(handlerInput: Alexa.HandlerInput) {
     return handlerInput.requestEnvelope.request.type === "LaunchRequest";
   },
-  handle(handlerInput) {
+  handle(handlerInput: Alexa.HandlerInput) {
     return (
       handlerInput.responseBuilder
         .speak("What is the name of the restaurant you want review for?")
@@ -17,15 +25,15 @@ const LaunchRequestHandler = {
 };
 
 const SearchIntentHandler = {
-  canHandle(handlerInput) {
+  canHandle(handlerInput: Alexa.HandlerInput) {
     return (
       handlerInput.requestEnvelope.request.type === "IntentRequest" &&
       handlerInput.requestEnvelope.request.intent.name === "SearchIntent"
     );
   },
-  async handle(handlerInput) {
-    const restaurantName =
-      handlerInput.requestEnvelope.request.intent.slots.Name.value;
+  async handle(handlerInput: Alexa.HandlerInput) {
+    const request = handlerInput.requestEnvelope.request as IntentRequest;
+    const restaurantName = request.intent.slots.Name.value;
     const { requestEnvelope, serviceClientFactory } = handlerInput;
     const { deviceId } = requestEnvelope.context.System.device;
     const deviceAddressServiceClient = serviceClientFactory.getDeviceAddressServiceClient();
@@ -33,6 +41,11 @@ const SearchIntentHandler = {
       countryCode,
       postalCode
     } = await deviceAddressServiceClient.getCountryAndPostalCode(deviceId);
+    // await client.connect();
+    // const res = await client.query('SELECT $1::text as message', ['Hello world!']);
+    // console.log(res.rows[0].message); // Hello world!
+    // await client.end();
+
     return handlerInput.responseBuilder
       .speak("looking for " + restaurantName + " in " + postalCode)
       .getResponse();
@@ -40,13 +53,13 @@ const SearchIntentHandler = {
 };
 
 const HelpIntentHandler = {
-  canHandle(handlerInput) {
+  canHandle(handlerInput: Alexa.HandlerInput) {
     return (
       handlerInput.requestEnvelope.request.type === "IntentRequest" &&
       handlerInput.requestEnvelope.request.intent.name === "AMAZON.HelpIntent"
     );
   },
-  handle(handlerInput) {
+  handle(handlerInput: Alexa.HandlerInput) {
     const speechText =
       "Help content: this skill find and tell you the yelp review of a restaurant. ";
 
@@ -55,7 +68,7 @@ const HelpIntentHandler = {
 };
 
 const CancelAndStopIntentHandler = {
-  canHandle(handlerInput) {
+  canHandle(handlerInput: Alexa.HandlerInput) {
     return (
       handlerInput.requestEnvelope.request.type === "IntentRequest" &&
       (handlerInput.requestEnvelope.request.intent.name ===
@@ -64,7 +77,7 @@ const CancelAndStopIntentHandler = {
           "AMAZON.StopIntent")
     );
   },
-  handle(handlerInput) {
+  handle(handlerInput: Alexa.HandlerInput) {
     const speechText = "Cancelling, goodbye!";
 
     return handlerInput.responseBuilder.speak(speechText).getResponse();
@@ -72,15 +85,12 @@ const CancelAndStopIntentHandler = {
 };
 
 const SessionEndedRequestHandler = {
-  canHandle(handlerInput) {
+  canHandle(handlerInput: Alexa.HandlerInput) {
     return handlerInput.requestEnvelope.request.type === "SessionEndedRequest";
   },
-  handle(handlerInput) {
-    console.log(
-      `Session ended with reason: ${
-        handlerInput.requestEnvelope.request.reason
-      }`
-    );
+  handle(handlerInput: Alexa.HandlerInput) {
+    const request = handlerInput.requestEnvelope.request as SessionEndedRequest;
+    console.log(`Session ended with reason: ${request.reason}`);
 
     return handlerInput.responseBuilder.getResponse();
   }
@@ -90,7 +100,7 @@ const ErrorHandler = {
   canHandle() {
     return true;
   },
-  handle(handlerInput, error) {
+  handle(handlerInput: Alexa.HandlerInput, error: Error) {
     console.log(`Error handled: ${error.message}`);
 
     return handlerInput.responseBuilder
@@ -101,7 +111,7 @@ const ErrorHandler = {
   }
 };
 
-exports.handler = Alexa.SkillBuilders.standard()
+export let handler = Alexa.SkillBuilders.standard()
   .addRequestHandlers(
     LaunchRequestHandler,
     SearchIntentHandler,
@@ -112,4 +122,3 @@ exports.handler = Alexa.SkillBuilders.standard()
   .addErrorHandlers(ErrorHandler)
   .lambda();
 
-// exports.handler(require("./test.json"), {succeed:console.log, fail:console.log},console.log);

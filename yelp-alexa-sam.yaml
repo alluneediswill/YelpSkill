@@ -32,7 +32,7 @@ Resources:
   AlexaSkillFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: index.handler
+      Handler: target/index.handler
       Runtime: nodejs8.10
       Role:
         Fn::GetAtt:
@@ -41,3 +41,9 @@ Resources:
       Events:
         AlexaSkillEvent:
           Type: AlexaSkill
+      Environment:
+        Variables:
+          yelp_key : AQICAHiVLf62VSQeys4m+m8f7GxspQFe7OUuG1GIrIdC98HyQwH5FLMuA/Dv1RslIf10oFEeAAAA4zCB4AYJKoZIhvcNAQcGoIHSMIHPAgEAMIHJBgkqhkiG9w0BBwEwHgYJYIZIAWUDBAEuMBEEDML8wM81sf68nmbqWQIBEICBmy7ncM9rJFKhGiPYiEUHmhku7NHFQ7/KZlptDBWdn7mFW3Ffhe5/pCLPrWEsOw+sIgZTsXZIYyNdRsCh2Ei/wIDrHU5YmP67NDBDwIeIx5f19oWlpw2F+6uBLGBqDr+eBnp9gFEp3Z9bY5DXvtfP4G+YW7+VK6Y2TloebUhRRz5L34aH3LFboKFCIeb7AASBepaJwBBlIsKnghJq
+          db_user : AQICAHiVLf62VSQeys4m+m8f7GxspQFe7OUuG1GIrIdC98HyQwH5k5xguqc/Pr4gqXPcv001AAAAYjBgBgkqhkiG9w0BBwagUzBRAgEAMEwGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMs1sEvL4zvJdMpKJWAgEQgB+Dj56H8a0gl73s8vnbxkZ16MTn6olxBE0U1ckcL9O3
+          db_pw : AQICAHiVLf62VSQeys4m+m8f7GxspQFe7OUuG1GIrIdC98HyQwG7ItLMrvgzZ6uqDzcDiu4wAAAAcjBwBgkqhkiG9w0BBwagYzBhAgEAMFwGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMW27Wu6BmucoIioM4AgEQgC/OUXEPZNOzKQkBq9ognYPcgORzrunQLkRpITc/FmXiV+Px8YLmjZaphC+ma00T0A==
+          db_host: AQICAHiVLf62VSQeys4m+m8f7GxspQFe7OUuG1GIrIdC98HyQwGC11BPspvjd3orea4zgtMkAAAAmjCBlwYJKoZIhvcNAQcGoIGJMIGGAgEAMIGABgkqhkiG9w0BBwEwHgYJYIZIAWUDBAEuMBEEDNM09TsEkgajmnjBCQIBEIBTQotVjk85w39d8KiORZIxx7cKJJvuoiFmXM/2WusP7p5TasiO7ACLEap1kxr/ixSl0zwRqHPnCJFuvbx48ANBOsfXvd8HwBvcEZjEWKodaQ+Gt5w=
