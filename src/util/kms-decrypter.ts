@@ -3,16 +3,14 @@ AWS.config.update({ region: "us-west-2" });
 const kms = new AWS.KMS();
 
 export class KMSDecrypter {
-  decryptedText: string;
-  decryptOp: Promise<string>;
+  decryptedText: Promise<string>;
   constructor(cipherText: string) {
-    this.decryptOp = kms
+    this.decryptedText = kms
       .decrypt({ CiphertextBlob: new Buffer(cipherText, "base64") })
       .promise()
       .then(
         data => {
-          this.decryptedText = data.Plaintext.toString();
-          return this.decryptedText;
+          return data.Plaintext.toString();
         },
         err => {
           console.log("Decrypt error:", err);
@@ -21,11 +19,7 @@ export class KMSDecrypter {
       );
   }
 
-  plainText(): Promise<string> {
-    if (this.decryptedText) {
-      return Promise.resolve(this.decryptedText);
-    } else {
-      return this.decryptOp;
-    }
+  text(): Promise<string> {
+    return this.decryptedText;
   }
 }
