@@ -6,7 +6,7 @@
   "scripts": {
     "build": "npm run prettier && npm run tslint && npm run build-ts",
     "build-ts": "tsc",
-    "test": "mocha -r ts-node/register test/**/*.spec.ts",
+    "test": "mocha -r ts-node/register src/**/*.spec.ts",
     "prettier": "prettier --write \"{src/**/*,*}.ts\"",
     "tslint": "tslint -c tslint.json -p tsconfig.json"
   },

@@ -7,7 +7,6 @@ import { SearchHandler } from "./handler/search-handler";
 import { HelpHandler } from "./handler/help-handler";
 import { CancelStopHandler } from "./handler/cancel-stop-handler";
 
-
 export let handler = Alexa.SkillBuilders.standard()
   .addRequestHandlers(
     new LaunchHandler(),
@@ -18,4 +17,3 @@ export let handler = Alexa.SkillBuilders.standard()
   )
   .addErrorHandlers(new ErrorHandler())
   .lambda();
-
